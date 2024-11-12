@@ -4,10 +4,12 @@ import com.diegocaviedes.franchise.franchise_api.application.service.*;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.BranchDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.FranchiseDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.ProductDTO;
+import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.ProductWithHighestStockDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.UpdateBranchNameDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.UpdateFranchiseNameDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.UpdateProductNameDTO;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,12 +23,15 @@ public class FranchiseController {
   private final UpdateStockService updateStockService;
   private final UpdateBranchNameService updateBranchNameService;
   private final UpdateProductNameService updateProductNameService;
+  private final DeleteProductService deleteProductService;
+  private final GetProductWithHighestStockService getProductWithHighestStockService;
 
   public FranchiseController(CreateFranchiseService createFranchiseService,
       UpdateFranchiseService updateFranchiseService, AddBranchService addBranchService,
       AddProductService addProductService, UpdateStockService updateStockService,
       UpdateBranchNameService updateBranchNameService,
-      UpdateProductNameService updateProductNameService) {
+      UpdateProductNameService updateProductNameService, DeleteProductService deleteProductService,
+      GetProductWithHighestStockService getProductWithHighestStockService) {
     this.createFranchiseService = createFranchiseService;
     this.updateFranchiseService = updateFranchiseService;
     this.addBranchService = addBranchService;
@@ -34,6 +39,8 @@ public class FranchiseController {
     this.updateStockService = updateStockService;
     this.updateBranchNameService = updateBranchNameService;
     this.updateProductNameService = updateProductNameService;
+    this.deleteProductService = deleteProductService;
+    this.getProductWithHighestStockService = getProductWithHighestStockService;
   }
 
 
@@ -85,4 +92,16 @@ public class FranchiseController {
         updateProductNameDTO.getName());
   }
 
+  @DeleteMapping("/{franchiseId}/branch/{branchId}/product/{productId}")
+  public Mono<Void> deleteProduct(@PathVariable String franchiseId,
+      @PathVariable String branchId,
+      @PathVariable String productId) {
+    return deleteProductService.deleteProduct(franchiseId, branchId, productId);
+  }
+
+  @GetMapping("/{franchiseId}/products/highest-stock")
+  public Flux<ProductWithHighestStockDTO> getProductWithHighestStock(
+      @PathVariable String franchiseId) {
+    return getProductWithHighestStockService.getProductWithHighestStock(franchiseId);
+  }
 }
