@@ -25,7 +25,7 @@ public class UpdateStockService implements UpdateStockUseCase {
               .findFirst()
               .ifPresent(branch -> {
                 branch.getProducts().stream()
-                    .filter(product -> product.getId().equals(productId))
+                    .filter(product -> product.getProductId().equals(productId))
                     .findFirst()
                     .ifPresent(product -> product.setStock(stock));
               });
