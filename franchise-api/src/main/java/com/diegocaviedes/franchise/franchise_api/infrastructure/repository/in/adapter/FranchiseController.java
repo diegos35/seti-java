@@ -4,6 +4,7 @@ import com.diegocaviedes.franchise.franchise_api.application.service.*;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.BranchDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.FranchiseDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.ProductDTO;
+import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.UpdateBranchNameDTO;
 import com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.adapter.dto.UpdateFranchiseNameDTO;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -17,15 +18,19 @@ public class FranchiseController {
   private final AddBranchService addBranchService;
   private final AddProductService addProductService;
   private final UpdateStockService updateStockService;
+  private final UpdateBranchNameService updateBranchNameService;
+
 
   public FranchiseController(CreateFranchiseService createFranchiseService,
       UpdateFranchiseService updateFranchiseService, AddBranchService addBranchService,
-      AddProductService addProductService, UpdateStockService updateStockService) {
+      AddProductService addProductService, UpdateStockService updateStockService,
+      UpdateBranchNameService updateBranchNameService) {
     this.createFranchiseService = createFranchiseService;
     this.updateFranchiseService = updateFranchiseService;
     this.addBranchService = addBranchService;
     this.addProductService = addProductService;
     this.updateStockService = updateStockService;
+    this.updateBranchNameService = updateBranchNameService;
   }
 
 
@@ -59,5 +64,14 @@ public class FranchiseController {
       @PathVariable String productId, @RequestParam int stock) {
     updateStockService.updateStock(franchiseId, branchId, productId, stock);
   }
+
+  @PutMapping("/{franchiseId}/branch/{branchId}/name")
+  public Mono<Void> updateBranchName(@PathVariable String franchiseId,
+      @PathVariable String branchId,
+      @RequestBody UpdateBranchNameDTO updateBranchNameDTO) {
+    return updateBranchNameService.updateBranchName(franchiseId, branchId,
+        updateBranchNameDTO.getName());
+  }
+
 
 }
