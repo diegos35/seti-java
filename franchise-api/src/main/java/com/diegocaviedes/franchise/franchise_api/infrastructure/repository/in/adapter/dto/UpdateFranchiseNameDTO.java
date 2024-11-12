@@ -3,10 +3,7 @@ package com.diegocaviedes.franchise.franchise_api.infrastructure.repository.in.a
 import lombok.Data;
 
 @Data
-public class ProductDTO {
+public class UpdateFranchiseNameDTO {
 
-  private String productId;
   private String name;
-  private int stock;
-
 }
